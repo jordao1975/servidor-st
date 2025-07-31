@@ -1,0 +1,70 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Gerenciar Disciplinas - {{ structure.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        Gerenciar Disciplinas para: <br>
+        <span class="text-primary">{{ structure.name }}</span>
+    </h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Adicionar Nova Disciplina
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_discipline', structure_id=structure.id) }}">
+                <div class="mb-3">
+                    <label for="discipline_name" class="form-label">Nome da Disciplina</label>
+                    <input type="text" class="form-control" id="discipline_name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="discipline_code" class="form-label">Código da Disciplina (Ex: LP1, CDIA)</label>
+                    <input type="text" class="form-control" id="discipline_code" name="code" required>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-2"></i>Adicionar Disciplina
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Disciplinas Existentes
+        </div>
+        <div class="card-body">
+            {% if disciplines %}
+            <ul class="list-group">
+                {% for discipline in disciplines %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ discipline.name }}</strong> ({{ discipline.code }})
+                    </div>
+                    <div>
+                        {# Botão para deletar a disciplina #}
+                        <form action="{{ url_for('delete_discipline', discipline_id=discipline.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja deletar esta disciplina? Isso também deletará todos os documentos associados a ela!')">
+                                <i class="bi bi-trash me-1"></i>Deletar
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="alert alert-info" role="alert">
+                Nenhuma disciplina cadastrada para esta estrutura ainda.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('manage_course_structure', course_id=structure.course_id) }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Voltar para Estruturas
+        </a>
+    </div>
+</div>
+{% endblock %}

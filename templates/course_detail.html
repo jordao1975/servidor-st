@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Curso{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalhes do Curso: <span class="text-primary">{{ course.name }}</span></h1>
+    <p>{{ course.description }}</p>
+
+    <h2>Documentos neste Curso:</h2>
+
+    {# Verifica se há alguma estrutura de curso #}
+    {% if course_data %}
+        {% for structure in course_data %} {# Itera sobre as estruturas de curso #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Estrutura: {{ structure.name }}
+                </div>
+                <div class="card-body">
+                    {# Verifica se há disciplinas dentro desta estrutura #}
+                    {% if structure.disciplines %}
+                        {% for discipline in structure.disciplines %} {# Itera sobre as disciplinas #}
+                            <h5 class="card-title">{{ discipline.name }} ({{ discipline.code }})</h5>
+
+                            {# Verifica se há documentos dentro desta disciplina #}
+                            {% if discipline.documents %}
+                                <ul class="list-group mb-3">
+                                    {% for doc in discipline.documents %} {# Itera sobre os documentos #}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ doc.title }}</strong> - Enviado por {{ doc.author }} em {{ doc.upload_date.split(" ")[0] }}
+                                            {% if doc.description %}<p class="text-muted mb-0">{{ doc.description }}</p>{% endif %}
+                                        </div>
+                                        <a href="{{ url_for('download_file', doc_id=doc.id) }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-download me-1"></i>Download ({{ doc.downloads }} downloads)
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <div class="alert alert-warning" role="alert">
+                                    Nenhum documento aprovado encontrado para esta disciplina.
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            Nenhuma disciplina cadastrada para esta estrutura.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Nenhuma estrutura de curso encontrada para este curso.
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+</div>
+{% endblock %}

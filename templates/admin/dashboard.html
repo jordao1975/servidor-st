@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Painel Administrativo</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Usuários</h5>
+                <p class="card-text display-4">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Documentos</h5>
+                <p class="card-text display-4">{{ total_docs }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Pendentes</h5>
+                <p class="card-text display-4">{{ pending_approval }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-5">Documentos Pendentes</h3>
+{% if pending_docs %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Disciplina</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in pending_docs %}
+            <tr>
+                <td>{{ doc.title }}</td>
+                <td>{{ doc.author.username }}</td>
+                <td>{{ doc.subject }}</td>
+                <td>{{ doc.upload_date.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <a href="{{ url_for('approve_document', doc_id=doc.id) }}" class="btn btn-sm btn-success">Aprovar</a>
+                    <a href="{{ url_for('reject_document', doc_id=doc.id) }}" class="btn btn-sm btn-danger">Rejeitar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">Nenhum documento pendente de aprovação</div>
+{% endif %}
+{% endblock %}10.

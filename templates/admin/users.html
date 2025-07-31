@@ -1,0 +1,64 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Gerenciar Usuários</h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome de Usuário</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user['id'] }}</td>
+                    <td>{{ user['username'] }}</td>
+                    <td>{{ user['email'] }}</td>
+                    <td>
+                        {% if user['is_admin'] %}
+                            <span class="badge bg-success">Administrador</span>
+                        {% else %}
+                            <span class="badge bg-primary">Utilizador</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            {# Formulário para Alternar o Status de Admin #}
+                            {% if user['id'] != current_user.id %} {# Previne que o admin altere seu próprio status #}
+                                <form action="{{ url_for('toggle_admin', user_id=user['id']) }}" method="POST" class="d-inline me-2">
+                                    <button type="submit" class="btn btn-sm {% if user['is_admin'] %}btn-warning{% else %}btn-success{% endif %}"
+                                            onclick="return confirm('Tem certeza que deseja {% if user['is_admin'] %}remover{% else %}conceder{% endif %} privilégios de administrador para {{ user['username'] }}?')">
+                                        {% if user['is_admin'] %}Remover Admin{% else %}Tornar Admin{% endif %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-sm btn-secondary me-2" disabled>Seu Utilizador</button>
+                            {% endif %}
+
+                            {# Formulário para Excluir Utilizador #}
+                            {% if user['id'] != current_user.id %}
+                                <form action="{{ url_for('delete_user', user_id=user['id']) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                           onclick="return confirm('ATENÇÃO! Todos os documentos deste utilizador serão excluídos. Continuar?')">
+                                        Excluir
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-sm btn-secondary" disabled>Não pode excluir</button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

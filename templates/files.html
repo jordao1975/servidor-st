@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Documentos Disponíveis</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Disciplina</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.filename }}</td>
+                <td>{{ file.subject or 'N/A' }}</td>
+                <td>{{ file.upload_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('download_file', filename=file.filename) }}" class="btn btn-sm btn-success">
+                        Baixar
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">Nenhum documento disponível</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

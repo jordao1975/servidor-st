@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Menu Admin
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('manage_courses') }}" class="list-group-item list-group-item-action">Cursos</a>
+                    <a href="{{ url_for('manage_users') }}" class="list-group-item list-group-item-action">Usuários</a>
+                    <a href="{{ url_for('manage_documents') }}" class="list-group-item list-group-item-action">Documentos</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

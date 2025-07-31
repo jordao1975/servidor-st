@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - USTM Docs{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Dashboard</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card text-center bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-file-earmark-text display-4 mb-2"></i>
+                    <h5 class="card-title">Total de Documentos</h5>
+                    <p class="card-text display-5">{{ total_documents }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-people display-4 mb-2"></i>
+                    <h5 class="card-title">Usuários Registrados</h5>
+                    <p class="card-text display-5">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-book display-4 mb-2"></i>
+                    <h5 class="card-title">Cursos Disponíveis</h5>
+                    <p class="card-text display-5">{{ total_courses }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-clock-history me-2"></i>Documentos Mais Recentes</h5>
+                    {% if recent_documents %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Título</th>
+                                        <th>Disciplina</th>
+                                        <th>Curso</th>
+                                        <th>Data de Upload</th>
+                                        <th>Autor</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doc in recent_documents %}
+                                    <tr>
+                                        <td>{{ doc.title }}</td>
+                                        <td>{{ doc.discipline_name }}</td> {# Assumindo que você passará discipline_name no app.py #}
+                                        <td>{{ doc.course_name }}</td>     {# Assumindo que você passará course_name no app.py #}
+                                        <td>{{ doc.upload_date.split(" ")[0] }}</td> {# Apenas a data, sem a hora #}
+                                        <td>{{ doc.author }}</td>
+                                        <td>
+                                            <a href="{{ url_for('download_file', doc_id=doc.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+                                            {% if current_user.is_admin %}
+                                            <a href="{{ url_for('manage_documents') }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            Nenhum documento recente encontrado.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Você pode adicionar mais seções de gráficos ou outras estatísticas aqui #}
+    {# Exemplo: Documentos mais baixados, Atividade de usuários, etc. #}
+
+</div>
+{% endblock %}

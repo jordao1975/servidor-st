@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Gerenciar Documentos</h2>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Documentos Pendentes</h5>
+        </div>
+        <div class="card-body">
+            {% if documents %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Curso</th>
+                            <th>Autor</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documents %}
+                        <tr>
+                            <td>{{ doc.title or doc.filename }}</td>
+                            <td>{{ doc.course_name }}</td>
+                            <td>{{ doc.author }}</td>
+                            <td>{{ doc.upload_date }}</td>
+                            <td>
+                                <a href="{{ url_for('approve_document', doc_id=doc.id) }}" class="btn btn-sm btn-success">Aprovar</a>
+                                <a href="{{ url_for('reject_document', doc_id=doc.id) }}" class="btn btn-sm btn-danger">Rejeitar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">Nenhum documento pendente</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

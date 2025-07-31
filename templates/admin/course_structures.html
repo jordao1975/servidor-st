@@ -1,0 +1,88 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Gerenciar Estruturas de Curso - {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        Gerenciar Estruturas de Curso para: <br>
+        <span class="text-primary">{{ course.name }}</span>
+    </h1>
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Gerenciamento de Estruturas</h2>
+        <div>
+            <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#structureModal">
+                <i class="bi bi-plus-circle"></i> Adicionar Estrutura
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="structureModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('add_course_structure', course_id=course.id) }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar Nova Estrutura</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="course_id" value="{{ course.id }}">
+                        <div class="mb-3">
+                            <label class="form-label">Nome da Estrutura (Ex: 1º Ano - 1º Semestre, 2024/1)</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            Estruturas Existentes
+        </div>
+        <div class="card-body">
+            {% if structures %}
+            <ul class="list-group">
+                {% for structure in structures %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ structure.name }}</strong>
+                    </div>
+                    <div>
+                        {# Botão para gerenciar disciplinas dentro desta estrutura #}
+                        <a href="{{ url_for('manage_disciplines', structure_id=structure.id) }}" class="btn btn-sm btn-primary me-2">
+                            <i class="bi bi-card-list me-1"></i>Disciplinas
+                        </a>
+                        {# Botão para deletar a estrutura #}
+                        <form action="{{ url_for('delete_course_structure', structure_id=structure.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja deletar esta estrutura? Isso também deletará todas as disciplinas e documentos associados a ela!')">
+                                <i class="bi bi-trash me-1"></i>Deletar
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="alert alert-info" role="alert">
+                Nenhuma estrutura de curso cadastrada para {{ course.name }} ainda.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('manage_courses') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Voltar para Cursos
+        </a>
+    </div>
+
+</div> {# <-- Adicione esta linha se estiver faltando #}
+
+{% endblock %} {# <-- Garanta que esta linha esteja presente e seja a última #}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item active">{{ course.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h1>{{ course.name }}</h1>
+        </div>
+        <div class="card-body">
+            <p class="lead">{{ course.description }}</p>
+
+            <div class="accordion" id="yearsAccordion">
+                {% for year in structure %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ year.id }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ year.id }}" aria-expanded="true"
+                                aria-controls="collapse{{ year.id }}">
+                            {{ year.name }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ year.id }}" class="accordion-collapse collapse show"
+                         aria-labelledby="heading{{ year.id }}" data-bs-parent="#yearsAccordion">
+                        <div class="accordion-body">
+                            <div class="row">
+                                {% for semester in year.semesters %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>{{ semester.name }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                {% for discipline in semester.disciplines %}
+                                                <li class="list-group-item">
+                                                    <a href="{{ url_for('discipline_view', discipline_id=discipline.id) }}">
+                                                        {{ discipline.name }} ({{ discipline.code }})
+                                                    </a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

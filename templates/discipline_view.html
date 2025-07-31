@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('view_course', course_id=discipline.course_id) }}">{{ discipline.course_name }}</a></li>
+            <li class="breadcrumb-item">{{ discipline.year_number }}° Ano</li>
+            <li class="breadcrumb-item">{{ discipline.semester_number }}° Semestre</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ discipline.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>{{ discipline.name }} <small class="text-white-50">({{ discipline.code }})</small></h2>
+                <a href="{{ url_for('view_course', course_id=discipline.course_id) }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="h5">Enviar Documento</h3>
+                    <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="discipline_id" value="{{ discipline.id }}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descrição</label>
+                            <textarea name="description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Arquivo</label>
+                            <input type="file" name="file" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    <h3 class="h5">Documentos</h3>
+                    {% if documents %}
+                    <div class="list-group">
+                        {% for doc in documents %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-1">{{ doc.title }}</h5>
+                                    <small class="text-muted">
+                                        Enviado por {{ doc.author }} em {{ doc.upload_date.strftime('%d/%m/%Y') }}
+                                        {% if not doc.is_approved %}
+                                        <span class="badge bg-warning text-dark">Pendente</span>
+                                        {% endif %}
+                                    </small>
+                                    {% if doc.description %}
+                                    <p class="mt-2 mb-0">{{ doc.description }}</p>
+                                    {% endif %}
+                                </div>
+                                <a href="{{ url_for('download_file', doc_id=doc.id) }}"
+                                   class="btn btn-sm btn-success align-self-center">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        Nenhum documento disponível ainda.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
