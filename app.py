@@ -1129,6 +1129,7 @@ if __name__ == '__main__':
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     # Criar um contexto de aplicação para init_db()
-    with app.app_context():  # <--- Esta linha inicia o bloco
-        init_db()  # <--- Esta linha precisa de estar INDENTADA (4 espaços ou 1 tab)
-              app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))  
+    with app.app_context():
+        init_db()  # Corretamente indentado (4 espaços)
+    
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))  
