@@ -4,45 +4,55 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Detalhes do Curso: <span class="text-primary">{{ course.name }}</span></h1>
-    <p>{{ course.description }}</p>
+    <h1 class="mb-4"><i class="bi bi-mortarboard-fill text-primary me-2"></i>Detalhes do Curso: <span class="text-primary">{{ course.name }}</span></h1>
+    <p class="lead">{{ course.description }}</p>
 
-    <h2>Documentos neste Curso:</h2>
+    <h2 class="mt-5 mb-3"><i class="bi bi-folder2-open text-secondary me-2"></i>Documentos neste Curso</h2>
 
     {# Verifica se há alguma estrutura de curso #}
     {% if course_data %}
-        {% for structure in course_data %} {# Itera sobre as estruturas de curso #}
-            <div class="card mb-3">
-                <div class="card-header">
-                    Estrutura: {{ structure.name }}
+        {% for structure in course_data %}
+            <div class="card mb-4 shadow-lg border-0 structure-card" style="background: linear-gradient(120deg, #f8fafc 80%, #e0e7ff 100%);">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-diagram-3 text-primary me-2"></i><strong>Estrutura:</strong> {{ structure.name }}</span>
+                    <span class="badge bg-primary">{{ structure.disciplines|length }} disciplinas</span>
                 </div>
                 <div class="card-body">
-                    {# Verifica se há disciplinas dentro desta estrutura #}
                     {% if structure.disciplines %}
-                        {% for discipline in structure.disciplines %} {# Itera sobre as disciplinas #}
-                            <h5 class="card-title">{{ discipline.name }} ({{ discipline.code }})</h5>
-
-                            {# Verifica se há documentos dentro desta disciplina #}
-                            {% if discipline.documents %}
-                                <ul class="list-group mb-3">
-                                    {% for doc in discipline.documents %} {# Itera sobre os documentos #}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{{ doc.title }}</strong> - Enviado por {{ doc.author }} em {{ doc.upload_date.split(" ")[0] }}
-                                            {% if doc.description %}<p class="text-muted mb-0">{{ doc.description }}</p>{% endif %}
-                                        </div>
-                                        <a href="{{ url_for('download_file', doc_id=doc.id) }}" class="btn btn-sm btn-info">
-                                            <i class="bi bi-download me-1"></i>Download ({{ doc.downloads }} downloads)
-                                        </a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                <div class="alert alert-warning" role="alert">
-                                    Nenhum documento aprovado encontrado para esta disciplina.
+                        <div class="row">
+                        {% for discipline in structure.disciplines %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 discipline-card">
+                                    <div class="card-header d-flex align-items-center justify-content-between" style="background: linear-gradient(90deg, #e0e7ff 60%, #f8fafc 100%);">
+                                        <span><i class="bi bi-bookmark-star text-success me-2"></i>{{ discipline.name }} <span class="text-muted">({{ discipline.code }})</span></span>
+                                        <span class="badge bg-secondary">{{ discipline.documents|length }} docs</span>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if discipline.documents %}
+                                            <ul class="list-group mb-3">
+                                                {% for doc in discipline.documents %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center doc-item">
+                                                    <div>
+                                                        <strong><i class="bi bi-file-earmark-text text-info me-1"></i>{{ doc.title }}</strong>
+                                                        <span class="ms-2 small text-muted">Enviado por {{ doc.author }} em {{ doc.upload_date.split(" ")[0] }}</span>
+                                                        {% if doc.description %}<p class="text-muted mb-0 small">{{ doc.description }}</p>{% endif %}
+                                                    </div>
+                                                    <a href="{{ url_for('download_file', doc_id=doc.id) }}" class="btn btn-sm btn-info btn-download-anim" title="Baixar documento">
+                                                        <i class="bi bi-download me-1"></i>Download <span class="badge bg-light text-dark ms-1">{{ doc.downloads }}</span>
+                                                    </a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <div class="alert alert-warning" role="alert">
+                                                Nenhum documento aprovado encontrado para esta disciplina.
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            {% endif %}
+                            </div>
                         {% endfor %}
+                        </div>
                     {% else %}
                         <div class="alert alert-info" role="alert">
                             Nenhuma disciplina cadastrada para esta estrutura.
@@ -58,7 +68,36 @@
     {% endif %}
 
     <div class="mt-4">
-        <a href="{{ url_for('home') }}" class="btn btn-secondary">Voltar para a Home</a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary btn-lg"><i class="bi bi-arrow-left me-1"></i>Voltar para a Home</a>
     </div>
 </div>
+<style>
+.structure-card {
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.structure-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(13,110,253,0.10);
+    transform: translateY(-2px) scale(1.02);
+}
+.discipline-card {
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.discipline-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(32,201,151,0.10);
+    transform: translateY(-2px) scale(1.02);
+}
+.doc-item {
+    transition: background 0.2s;
+}
+.doc-item:hover {
+    background: #f0f4ff;
+}
+.btn-download-anim {
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.btn-download-anim:hover {
+    box-shadow: 0 0.5rem 1rem rgba(13,110,253,0.10);
+    transform: translateY(-2px) scale(1.05);
+}
+</style>
 {% endblock %}
