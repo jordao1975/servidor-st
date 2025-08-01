@@ -20,28 +20,32 @@
                 {% for year in structure %}
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ year.id }}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse{{ year.id }}" aria-expanded="true"
+                        <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ year.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}"
                                 aria-controls="collapse{{ year.id }}">
+                            <i class="bi bi-calendar3 me-2 text-primary"></i>
                             {{ year.name }}
+                            <span class="badge bg-secondary ms-2">{{ year.semesters|length }} semestres</span>
                         </button>
                     </h2>
-                    <div id="collapse{{ year.id }}" class="accordion-collapse collapse show"
+                    <div id="collapse{{ year.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
                          aria-labelledby="heading{{ year.id }}" data-bs-parent="#yearsAccordion">
                         <div class="accordion-body">
                             <div class="row">
                                 {% for semester in year.semesters %}
                                 <div class="col-md-6 mb-3">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>{{ semester.name }}</h5>
+                                    <div class="card shadow-sm border-0 semester-card" style="background: linear-gradient(120deg, #f8fafc 80%, #e0e7ff 100%);">
+                                        <div class="card-header d-flex align-items-center justify-content-between">
+                                            <span><i class="bi bi-journal-bookmark me-2 text-success"></i><strong>{{ semester.name }}</strong></span>
+                                            <span class="badge bg-primary">{{ semester.disciplines|length }} disciplinas</span>
                                         </div>
                                         <div class="card-body">
                                             <ul class="list-group list-group-flush">
                                                 {% for discipline in semester.disciplines %}
-                                                <li class="list-group-item">
-                                                    <a href="{{ url_for('discipline_view', discipline_id=discipline.id) }}">
-                                                        {{ discipline.name }} ({{ discipline.code }})
+                                                <li class="list-group-item d-flex align-items-center discipline-item">
+                                                    <i class="bi bi-book me-2 text-info"></i>
+                                                    <a href="{{ url_for('discipline_view', discipline_id=discipline.id) }}" class="flex-grow-1 text-decoration-none discipline-link">
+                                                        {{ discipline.name }} <span class="text-muted">({{ discipline.code }})</span>
                                                     </a>
                                                 </li>
                                                 {% endfor %}
@@ -56,6 +60,33 @@
                 </div>
                 {% endfor %}
             </div>
+            <style>
+            .semester-card {
+                transition: box-shadow 0.2s, transform 0.2s;
+            }
+            .semester-card:hover {
+                box-shadow: 0 0.5rem 1rem rgba(13,110,253,0.10);
+                transform: translateY(-2px) scale(1.02);
+            }
+            .discipline-link {
+                color: #224abe;
+                transition: color 0.2s, text-shadow 0.2s;
+            }
+            .discipline-link:hover {
+                color: #0d6efd;
+                text-shadow: 0 1px 2px #b6c6f7;
+            }
+            .discipline-item {
+                transition: background 0.2s;
+            }
+            .discipline-item:hover {
+                background: #f0f4ff;
+            }
+            .accordion-button:focus {
+                outline: 2px solid #ffbf47;
+                outline-offset: 2px;
+            }
+            </style>
         </div>
     </div>
 </div>
